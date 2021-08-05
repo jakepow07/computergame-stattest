@@ -19,7 +19,7 @@
     }
 
   });
-  let promise3 = promise.then(myBlob => {
+  let promise3 = promise2.then(myBlob => {
     let objectURL = URL.createObjectURL(myBlob);
     let image = document.createElement('img');
     image.src = objectURL;
