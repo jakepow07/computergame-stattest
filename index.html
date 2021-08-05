@@ -10,7 +10,7 @@
   <p>This is my page</p>
 </body>
 <script>
-  let promise = fetch('coffee.jpg');
+  let promise = fetch('file:///Users/jakepowell/Desktop/coffee.jpeg');
   let promise2 = promise.then(response => {
     if (!response.ok) {
       throw new error(`HTTP Error Status: ${response.status}`);
@@ -24,8 +24,12 @@
     let image = document.createElement('img');
     image.src = objectURL;
     document.body.appendChild(image);
+    
 
   })
+  let errorCase = promise3.catch(e => {
+  console.log('There has been a problem with your fetch operation: ' + e.message);
+});
 </script>
 
 </html>
