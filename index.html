@@ -10,26 +10,43 @@
   <p>This is my page</p>
 </body>
 <script>
-  let promise = fetch('https://upload.wikimedia.org/wikipedia/commons/4/45/A_small_cup_of_coffee.JPG');
-  let promise2 = promise.then(response => {
-    if (!response.ok) {
-      throw new error(`HTTP Error Status: ${response.status}`);
-    } else {
-      return response.blob();
-    }
+  function fetchAndDecode(url, type) {
+    return fetch(url).then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        } else {
+          if (type === 'blob') {
+            return response.blob();
+          } else if (type === 'text') {
+            return response.text();
+          }
+        }
+      })
+      .catch(e => {
+        console.log(`There has been a problem with your fetch operation for resource "${url}": ` + e.message);
+      });
+  }
+  let coffee = fetchAndDecode('coffee.jpg', 'blob');
+  let tea = fetchAndDecode('tea.jpg', 'blob');
+  let description = fetchAndDecode('description.txt', 'text');
 
+  Promise.all([coffee, tea, description]).then(values => {
+    console.log(values);
+    let objectURL1 = URL.createObjectURL(values[0]);
+    let objectURL1 = URL.createObjectURL(values[1]);
+    let descText = values[2];
+
+    let image1 = document.createElement('img');
+    let image2 = document.createElement('img');
+    image1.src = objectURL1;
+    image2.src = objectURL2;
+    document.body.appendChild(image1);
+    document.body.appendChild(image2);
+
+    let para = document.createElement('p');
+    para.textContent = descText;
+    document.body.appendChild(para);
   });
-  let promise3 = promise2.then(myBlob => {
-    let objectURL = URL.createObjectURL(myBlob);
-    let image = document.createElement('img');
-    image.src = objectURL;
-    document.body.appendChild(image);
-    
-
-  })
-  let errorCase = promise3.catch(e => {
-  console.log('There has been a problem with your fetch operation: ' + e.message);
-});
 </script>
 
 </html>
