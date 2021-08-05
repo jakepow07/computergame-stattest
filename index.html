@@ -10,7 +10,7 @@
   <p>This is my page</p>
 </body>
 <script>
-  let promise = fetch('Desktop/coffee.jpg');
+  let promise = fetch('https://jakepow07.github.io/hello/coffee.jpg');
   let promise2 = promise.then(response => {
     if (!response.ok) {
       throw new error(`HTTP Error Status: ${response.status}`);
