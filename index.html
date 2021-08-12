@@ -73,10 +73,10 @@
       updateDisplay(verse);
     }
 
-    function updateDisplay() {
+    function updateDisplay(verse) {
       verse = verse.replace(" ", "");
       verse = verse.toLowerCase();
-      let url = "js docs practice/" + verse + ".txt";
+      let url = verse + ".txt";
       let request = new XMLHttpRequest();
       request.open("GET", url);
       request.responseType = 'text';
