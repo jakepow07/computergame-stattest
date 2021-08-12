@@ -64,6 +64,8 @@
   <script>
     const verseChoose = document.querySelector('select');
     const poemDisplay = document.querySelector('pre');
+    updateDisplay('Verse 4');
+    verseChoose.value = 'Verse 1';
 
 
     verseChoose.onChange = function() {
@@ -85,9 +87,6 @@
 
       request.send();
     }
-
-    updateDisplay('Verse 4');
-    verseChoose.value = 'Verse 1';
   </script>
 </body>
 
