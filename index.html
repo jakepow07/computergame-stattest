@@ -3,91 +3,184 @@
 
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Ajax starting point</title>
-
-  <style>
-    html,
-    pre {
-      font-family: sans-serif;
-    }
-
-    body {
-      width: 500px;
-      margin: 0 auto;
-      background-color: #ccc;
-    }
-
-    pre {
-      line-height: 1.5;
-      letter-spacing: 0.05rem;
-      padding: 1rem;
-      background-color: white;
-    }
-
-    label {
-      width: 200px;
-      margin-right: 33px;
-    }
-
-    select {
-      width: 350px;
-      padding: 5px;
-    }
-  </style>
-  <!--[if lt IE 9]>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
-    <![endif]-->
+  <title>NY Times API example</title>
+  <link href="nytimes.css" rel="stylesheet">
 </head>
 
 <body>
-  <h1>Ajax starting point</h1>
+  <h1>NY Times article search</h1>
 
-  <form>
-    <label for="verse-choose">Choose a verse</label>
-    <select id="verse-choose" name="verse-choose">
-      <option>Verse 1</option>
-      <option>Verse 2</option>
-      <option>Verse 3</option>
-      <option>Verse 4</option>
-    </select>
-  </form>
+  <div class="wrapper">
 
-  <h2>The Conqueror Worm, <em>Edgar Allen Poe, 1843</em></h2>
+    <div class="controls">
+      <form>
+        <p>
+          <label for="search">Enter a SINGLE search term (required): </label>
+          <input type="text" id="search" class="search" required>
+        </p>
+        <p>
+          <label for="start-date">Enter a start date (format YYYYMMDD): </label>
+          <input type="date" id="start-date" class="start-date" pattern="[0-9]{8}">
+        </p>
+        <p>
+          <label for="end-date">Enter an end date (format YYYYMMDD): </label>
+          <input type="date" id="end-date" class="end-date" pattern="[0-9]{8}">
+        </p>
+        <p>
+          <button class="submit">Submit search</button>
+        </p>
+      </form>
+    </div>
 
-  <pre>
+    <div class="results">
+      <nav>
+        <button class="prev">Previous 10</button>
+        <button class="next">Next 10</button>
+      </nav>
 
-    </pre>
+      <section>
+      </section>
+    </div>
+
+  </div>
 
   <script>
-    const verseChoose = document.querySelector('select');
-    const poemDisplay = document.querySelector('pre');
-    updateDisplay('Verse 4');
-    verseChoose.value = 'Verse 1';
+    // Defining a baseURL and key to as part of the request URL
+
+    const baseURL = 'https://api.nytimes.com/svc/search/v2/articlesearch.json';
+    const key = 'OE5vZGgqTT6o0922c8PaZdgZazgtyoLJ';
+    let url;
+
+    // Grab references to all the DOM elements you'll need to manipulate
+
+    const searchTerm = document.querySelector('.search');
+    const startDate = document.querySelector('.start-date');
+    const endDate = document.querySelector('.end-date');
+    const searchForm = document.querySelector('form');
+
+    // This is never used
+    // const submitBtn = document.querySelector('.submit');
+
+    const nextBtn = document.querySelector('.next');
+    const previousBtn = document.querySelector('.prev');
+
+    const section = document.querySelector('section');
+    const nav = document.querySelector('nav');
+
+    // Hide the "Previous"/"Next" navigation to begin with, as we don't need it immediately
+    nav.style.display = 'none';
+
+    // define the initial page number and status of the navigation being displayed
+    let pageNumber = 0;
+
+    // This is never used
+    // let displayNav = false;
+
+    // Event listeners to control the functionality
+    searchForm.addEventListener('submit', submitSearch);
+    nextBtn.addEventListener('click', nextPage);
+    previousBtn.addEventListener('click', previousPage);
+
+    function submitSearch(e) {
+      pageNUmber = 0;
+      fetchResults(e);
+    }
+
+    function fetchResulte(e) {
+      e.preventDefault();
+
+      url = baseURL + '?api-key=' + key + '&page=' + pageNumber + '&q=' + searchTerm.value + '&fq=document_type:("article")';
+
+      if (startDate.value !== '') {
+        url += '&begin_date=' + startDate.value;
+      };
+      if (endDate.value !== '') {
+        url += '&end_date=' + endDate.value;
+      };
+      fetch(url).then(function(result) {
+        return result.json();
+      }).then(function(json) {
+        displayResults(json);
+      });
+
+    }
+
+    function displayResults(json) {
+      while (section.firstChild) {
+        section.removeChild(section.firstChild);
+      }
+
+      const articles = json.response.docs;
+
+      if (articles.length === 10) {
+        nav.style.display = 'block';
+      } else {
+        nav.style.display = 'none';
+      }
+
+      if (articles.length === 0) {
+        const para = document.createElement('p');
+        para.textContent = 'No results returned.'
+        section.appendChild(para);
+      } else {
+        for (var i = 0; i < articles.length; i++) {
+          const article = document.createElement('article');
+          const heading = document.createElement('h2');
+          const link = document.createElement('a');
+          const img = document.createElement('img');
+          const para1 = document.createElement('p');
+          const para2 = document.createElement('p');
+          const clearfix = document.createElement('div');
+
+          let current = articles[i];
+          console.log(current);
+
+          link.href = current.web_url;
+          link.textContent = current.headline.main;
+          para1.textContent = current.snippet;
+          para2.textContent = 'Keywords: ';
+          for (let j = 0; j < current.keywords.length; j++) {
+            const span = document.createElement('span');
+            span.textContent += current.keywords[j].value + ' ';
+            para2.appendChild(span);
+          }
+
+          if (current.multimedia.length > 0) {
+            img.src = 'http://www.nytimes.com/' + current.multimedia[0].url;
+            img.alt = current.headline.main;
+          }
+          clearfix.setAttribute('class', 'clearfix');
+
+          article.appendChild(heading);
+          heading.appendChild(link);
+          article.appendChild(img);
+          article.appendChild(para1);
+          article.appendChild(para2);
+          article.appendChild(clearfix);
+          section.appendChild(article);
+        }
+      }
 
 
-    verseChoose.onchange = function() {
-      const verse = verseChoose.value;
-      updateDisplay(verse);
+    }
+
+    function nextPage(e) {
+      pageNumber++;
+      fetchResults(e);
     };
 
-    function updateDisplay(verse) {
-      verse = verse.replace(" ", "");
-      verse = verse.toLowerCase();
-      let url = verse + ".txt";
-      let request = new XMLHttpRequest();
-      request.open('GET', url);
-      request.responseType = 'text';
-
-      request.onload = function() {
-        poemDisplay.textContent = request.response;
-      };
-
-      request.send();
-    }
+    function previousPage(e) {
+      if (pageNumber > 0) {
+        pageNumber--;
+      } else {
+        return;
+      }
+      fetchResults(e);
+    };
   </script>
+
+
 </body>
 
 </html>
