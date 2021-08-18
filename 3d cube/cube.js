@@ -4,7 +4,7 @@ const camera = new THREE.PerspectiveCamera(150, window.innerWidth / window.inner
 camera.position.z = 5;
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth/2, window.innerHeight/2);
+renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 let cube;
