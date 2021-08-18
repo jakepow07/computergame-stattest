@@ -34,8 +34,8 @@ spotLight.castShadow = true;
 scene.add(spotLight);
 
 function draw() {
-  cube.rotation.x += .01;
-  cube.rotation.y += .01;
+  cube.rotation.x += 1;
+  cube.rotation.y += 1;
   renderer.render(scene, camera);
   requestAnimationFrame(draw);
 }
