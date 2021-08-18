@@ -16,7 +16,7 @@ loader.load('metal003.png', function (texture) {
 	texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(2, 2);
 
-  let geometry = new THREE.BoxGeometry(2.4, 2.4, 2.4);
+  let geometry = new THREE.BoxGeometry(6, 6, 6);
   let material = new THREE.MeshLambertMaterial({
     map: texture,
     shading: THREE.FlatShading
