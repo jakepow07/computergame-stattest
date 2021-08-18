@@ -11,7 +11,7 @@ let cube;
 
 let loader = new THREE.TextureLoader();
 loader.setCrossOrigin ( 'anonymous' );
-loader.load('metal003.png', function (texture) {
+loader.load('3d cube/metal003.png', function (texture) {
   texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(2, 2);
