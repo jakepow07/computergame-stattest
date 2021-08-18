@@ -16,7 +16,7 @@ loader.load('metal003.png', function (texture) {
 	texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(2, 2);
 
-  let geometry = new THREE.BoxGeometry(2.4, 2.4, 2.4);
+  let geometry = new THREE.BoxGeometry(6, 6, 6);
   let material = new THREE.MeshLambertMaterial({
     map: texture,
     shading: THREE.FlatShading
@@ -34,8 +34,8 @@ spotLight.castShadow = true;
 scene.add(spotLight);
 
 function draw() {
-  cube.rotation.x += .01;
-  cube.rotation.y += .01;
+  cube.rotation.x += 1;
+  cube.rotation.y += 1;
   renderer.render(scene, camera);
   requestAnimationFrame(draw);
 }
